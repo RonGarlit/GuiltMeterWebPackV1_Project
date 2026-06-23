@@ -35,7 +35,7 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "A modern, interactive web application that helps Florida Gulf Coast University employees calculate their total compensation package, including salary, benefits, and time-off valuation.",
+  "description": "Guilt Meter is a modern, interactive web application that is using experimental LLM coding features for development.",
   "dependencies": {
     "@fortawesome/fontawesome-free": "^6.7.2",
     "@popperjs/core": "^2.11.8",
