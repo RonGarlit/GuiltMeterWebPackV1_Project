@@ -1,0 +1,328 @@
+<!doctype html>
+<html lang="en" data-bs-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Guilt Meter</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <!-- Dark Mode Toggle -->
+    <button class="btn btn-outline-secondary theme-toggle" onclick="window.toggleTheme()">
+      🌙 Dark Mode
+    </button>
+
+    <!-- Audio Controls -->
+    <div class="audio-controls card shadow-sm">
+      <div class="card-body d-flex align-items-center gap-2 p-2">
+        <button class="btn btn-primary audio-button" id="jimmyButton" onclick="window.playJimmy()">
+          🎵 Play: It's 5 O'Clock Somewhere
+        </button>
+        <input
+          type="range"
+          class="form-range volume-control"
+          id="volumeControl"
+          min="0"
+          max="100"
+          value="50"
+          oninput="window.adjustVolume(this.value)"
+        />
+        <small class="text-muted">Volume</small>
+      </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container py-4">
+      <div class="row justify-content-center">
+        <div class="col-lg-8 col-xl-7">
+
+          <!-- Header -->
+          <header class="text-center mb-4">
+            <h1 class="display-5 fw-bold">Guilt Meter</h1>
+          </header>
+
+          <!-- Gauge Section -->
+          <div class="card shadow-sm mb-4">
+            <div class="card-body text-center">
+              <div class="gauge-container">
+                <div id="guiltGauge"></div>
+              </div>
+              <div class="score-display">
+                Score: <span id="score" class="fw-bold">0</span>
+              </div>
+              <div class="status-message" id="status"></div>
+              <div id="donutAlert" class="donut-alert alert" style="display: none"></div>
+            </div>
+          </div>
+
+          <!-- Input Sections -->
+          <div class="inputs">
+
+            <!-- Environmental Factors Card -->
+            <div class="card shadow-sm mb-4">
+              <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">🌡️ Environmental Factors</h5>
+              </div>
+              <div class="card-body">
+
+                <div class="mb-3">
+                  <label for="lighting" class="form-label fw-medium">
+                    Lighting (0–10) — 0=Dark, 10=Perfect
+                  </label>
+                  <input type="range" class="form-range" id="lighting" min="0" max="10" value="5" />
+                </div>
+
+                <div class="mb-3">
+                  <label for="noise" class="form-label fw-medium">
+                    Noise Level (0–10) — 0=Silent, 10=Loud
+                  </label>
+                  <input type="range" class="form-range" id="noise" min="0" max="10" value="5" />
+                </div>
+
+                <div class="mb-3 form-check">
+                  <input type="checkbox" class="form-check-input" id="acWorking" checked />
+                  <label class="form-check-label" for="acWorking">AC Working?</label>
+                </div>
+
+                <div class="mb-3">
+                  <label for="powerLevel" class="form-label fw-medium">
+                    Power Level (0–10)
+                  </label>
+                  <input type="range" class="form-range" id="powerLevel" min="0" max="10" value="10" />
+                </div>
+
+                <div class="mb-3 form-check">
+                  <input type="checkbox" class="form-check-input" id="upsWorking" checked />
+                  <label class="form-check-label" for="upsWorking">UPS Working?</label>
+                </div>
+
+                <div class="mb-3 form-check">
+                  <input type="checkbox" class="form-check-input" id="fireAlarm" />
+                  <label class="form-check-label" for="fireAlarm">Fire Alarm Ringing?</label>
+                </div>
+
+                <div class="mb-3 form-check">
+                  <input type="checkbox" class="form-check-input" id="badReview" />
+                  <label class="form-check-label" for="badReview">Bad Performance Review in Last 90 Days?</label>
+                </div>
+
+                <div class="mb-3">
+                  <label for="daysSince" class="form-label fw-medium">
+                    Days Since Last Guilt Threshold Crossed
+                  </label>
+                  <input type="number" class="form-control" id="daysSince" min="0" value="0" />
+                </div>
+
+              </div>
+            </div>
+
+            <!-- Security Violations Card -->
+            <div class="card shadow-sm mb-4 border-danger">
+              <div class="card-header bg-danger text-white">
+                <h5 class="mb-0">🔒 Security Violations</h5>
+              </div>
+              <div class="card-body">
+
+                <div class="mb-3 form-check">
+                  <input type="checkbox" class="form-check-input" id="secViolationUnlocked" onchange="window.toggleViolationRemedies()" />
+                  <label class="form-check-label fw-semibold" for="secViolationUnlocked">
+                    Workstation Left Unlocked
+                  </label>
+                </div>
+
+                <div class="mb-3 form-check">
+                  <input type="checkbox" class="form-check-input" id="secViolationPhishingTest" onchange="window.toggleViolationRemedies()" />
+                  <label class="form-check-label fw-semibold" for="secViolationPhishingTest">
+                    Phishing Test Emails Triggered
+                  </label>
+                </div>
+
+                <div class="mb-3 form-check">
+                  <input type="checkbox" class="form-check-input" id="secViolationRealPhishing" onchange="window.toggleViolationRemedies()" />
+                  <label class="form-check-label fw-semibold" for="secViolationRealPhishing">
+                    Real Phishing Attack Email Triggered
+                  </label>
+                </div>
+
+              </div>
+            </div>
+
+            <!-- Self-Help Remedies Card -->
+            <div class="card shadow-sm mb-4" id="selfHelpSection">
+              <div class="card-header bg-success text-white">
+                <h5 class="mb-0">💊 Self-Help Remedies</h5>
+              </div>
+              <div class="card-body">
+                <div class="mb-3">
+                  <label for="userRemedy" class="form-label">Select a remedy:</label>
+                  <select class="form-select" id="userRemedy">
+                    <option value="testUps">Test UPS</option>
+                    <option value="testDock">Test Docking Station</option>
+                    <option value="coffee">Make Coffee</option>
+                    <option value="fan">Turn Fan On</option>
+                    <option value="lights">Toggle Lights</option>
+                    <option value="ping">Ping Internet</option>
+                    <option value="outlook">Send Outlook Alert</option>
+                    <option value="reset">Timeout/Reset</option>
+                    <option value="stretch">Stretch</option>
+                    <option value="pushups">Do Push-Ups</option>
+                    <option value="breath">Deep Breath</option>
+                    <option value="walk">15-Minute Walk</option>
+                    <option value="shoes">Take Off Shoes &amp; Curl Toes on Shag Carpet</option>
+                    <option value="beach">Close Eyes &amp; Picture a Tranquil Caribbean Beach</option>
+                    <option value="buyDonuts">Buy Donuts for the Team</option>
+                    <option value="writtenUp">Accept Written Warning</option>
+                    <option value="happyHour">Pay for Happy Hour Bar Tab (Friday)</option>
+                  </select>
+                </div>
+                <button class="btn btn-success w-100" onclick="window.applyUserRemedy()">
+                  Apply Self-Help
+                </button>
+              </div>
+            </div>
+
+            <!-- Management Remedies Card -->
+            <div class="card shadow-sm mb-4">
+              <div class="card-header bg-warning text-dark">
+                <h5 class="mb-0">💼 Management Actions</h5>
+              </div>
+              <div class="card-body">
+                <div class="mb-3">
+                  <label for="managementRemedy" class="form-label">Select a management action:</label>
+                  <select class="form-select" id="managementRemedy">
+                    <option value="donut">Order Donuts</option>
+                    <option value="sub">Order Subs</option>
+                    <option value="wfh">Approve Work From Home</option>
+                    <option value="dayoff">Grant Day Off</option>
+                    <option value="vacation">Swap Vacation Day</option>
+                  </select>
+                </div>
+                <button class="btn btn-warning w-100" onclick="window.applyManagementRemedy()">
+                  Apply Management Action
+                </button>
+              </div>
+            </div>
+
+            <!-- Violation Remedies Card (hidden by default) -->
+            <div class="card shadow-sm mb-4 border-danger" id="violationRemediesSection" style="display: none">
+              <div class="card-header bg-danger text-white">
+                <h5 class="mb-0">🛡️ Violation Remedies</h5>
+              </div>
+              <div class="card-body">
+
+                <!-- Unlocked Workstation Remedies -->
+                <div id="secUnlockedRemedies" style="display: none">
+                  <h6 class="fw-bold text-danger mb-2">
+                    Workstation Left Unlocked — Remedies (Guilt: 70)
+                  </h6>
+                  <div class="mb-3">
+                    <select class="form-select" id="secUnlockedSelect">
+                      <option value="buyDonutsWeek">Buy Donuts for the Team for a Week</option>
+                      <option value="writtenUpPersonal">Accept Written Warning in Personal File</option>
+                    </select>
+                  </div>
+                  <button class="btn btn-danger w-100 mb-3" onclick="window.applySecUnlockedRemedy()">
+                    Apply Remedy
+                  </button>
+                </div>
+
+                <!-- Phishing Test Remedies -->
+                <div id="secPhishingTestRemedies" style="display: none">
+                  <h6 class="fw-bold text-danger mb-2">
+                    Phishing Test Emails Triggered — Remedies (Guilt: 85)
+                  </h6>
+                  <div class="mb-3">
+                    <select class="form-select" id="secPhishingTestSelect">
+                      <option value="buyDonutsWeekPt">Buy Donuts for the Team for a Week</option>
+                      <option value="twoRoundsDrinks">Buy Two Rounds of Drinks at Friday Team Happy Hour</option>
+                    </select>
+                  </div>
+                  <button class="btn btn-danger w-100 mb-3" onclick="window.applySecPhishingTestRemedy()">
+                    Apply Remedy
+                  </button>
+                </div>
+
+                <!-- Real Phishing Remedies -->
+                <div id="secRealPhishingRemedies" style="display: none">
+                  <h6 class="fw-bold text-danger mb-2">
+                    Real Phishing Attack Email Triggered — Remedies (Guilt: 100)
+                  </h6>
+                  <div class="mb-3">
+                    <select class="form-select" id="secRealPhishingSelect">
+                      <option value="twoRoundsDrinks4Weeks">Buy Two Rounds of Drinks at Friday Team Happy Hour over Four Weeks</option>
+                      <option value="begMercy">Publicly Beg for Mercy &amp; Become Tester for Every Project</option>
+                    </select>
+                  </div>
+                  <button class="btn btn-danger w-100 mb-3" onclick="window.applySecRealPhishingRemedy()">
+                    Apply Remedy
+                  </button>
+                </div>
+
+              </div>
+            </div>
+
+            <!-- Remedy Output -->
+            <div id="remedyOutput" class="alert alert-info" style="display: none"></div>
+
+            <!-- History -->
+            <div class="card shadow-sm mb-4">
+              <div class="card-body">
+                <h6 class="fw-bold">📜 Last Guilt Event:</h6>
+                <span id="lastEvent">Never</span>
+              </div>
+            </div>
+
+            <!-- Reset Button -->
+            <div class="text-center mb-4">
+              <button class="btn btn-secondary btn-lg" onclick="window.resetGuiltMeter()">
+                🔄 Reset Guilt Meter
+              </button>
+            </div>
+
+            <!-- Export Controls Card -->
+            <div class="card shadow-sm mb-4 export-controls">
+              <div class="card-header bg-info text-white">
+                <h5 class="mb-0">📤 Data Management</h5>
+              </div>
+              <div class="card-body">
+                <div class="d-flex flex-wrap gap-2">
+                  <button class="btn btn-outline-primary" onclick="window.exportData()">
+                    📥 Export Data
+                  </button>
+                  <label class="btn btn-outline-primary mb-0" for="importFile">
+                    📤 Import Data
+                  </label>
+                  <input type="file" id="importFile" accept=".json" style="display: none" onchange="window.importData(event)" />
+                  <button class="btn btn-outline-success" onclick="window.backupData(true)">
+                    💾 Backup
+                  </button>
+                  <button class="btn btn-outline-warning" onclick="window.restoreData()">
+                    📂 Restore
+                  </button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+          <!-- /.inputs -->
+
+          <!-- Footer -->
+          <footer class="footer-mantra text-center py-3">
+            🏡 And may management finally approve WFH.
+          </footer>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- WFH Celebration Overlay -->
+    <div id="wfhCelebration" class="wfh-celebration">
+      <h2>🎉 WFH Approved! 🎉</h2>
+      <p>Pack your laptop and enjoy the freedom!</p>
+    </div>
+
+  </body>
+</html>
