@@ -5,7 +5,7 @@
 
 import { updateGauge } from './gauge.js';
 import { setWfhApproved, getWfhApproved } from './state.js';
-import { recordEvent } from './ui.js';
+import { recordEvent, updateSliderFill } from './ui.js';
 
 const THRESHOLD = 70;
 const SEVERE_THRESHOLD = 90;
@@ -111,6 +111,7 @@ export function simulatePowerSampling() {
     const fluctuation = Math.random() > 0.7 ? -1 : 0;
     const current = Math.max(0, Math.min(10, Number(powerLevel.value) + fluctuation));
     powerLevel.value = current;
+    updateSliderFill(powerLevel);
     calculateGuiltScore();
 }
 

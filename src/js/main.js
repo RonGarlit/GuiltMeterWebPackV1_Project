@@ -31,6 +31,7 @@ import {
     toggleTheme,
     showStatus,
     recordEvent,
+    updateSliderFill,
 } from './ui.js';
 
 // ===== EXPOSE FUNCTIONS TO WINDOW (for HTML onclick/onchange handlers) =====
@@ -63,7 +64,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Initialize persistence manager
     const persistenceManager = new PersistenceManager();
-    persistenceManager.initialize();
+    persistenceManager.initialize().then(() => {
+        // After persistence restores values, update all slider fills
+        document.querySelectorAll('.form-range').forEach(updateSliderFill);
+    });
 
     // Restore last event display from localStorage
     const savedEvent = localStorage.getItem('lastEvent');
@@ -80,8 +84,12 @@ document.addEventListener('DOMContentLoaded', () => {
         // Add validation for range inputs
         if (input.type === 'range') {
             input.addEventListener('input', () => validateInput(input));
+            input.addEventListener('input', () => updateSliderFill(input));
         }
     });
+
+    // Initialize slider color fills (initial values before persistence)
+    document.querySelectorAll('.form-range').forEach(updateSliderFill);
 
     // Run initial validation on range inputs
     document.querySelectorAll(".inputs input[type='range']").forEach(validateInput);

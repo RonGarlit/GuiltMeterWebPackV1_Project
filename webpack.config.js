@@ -21,7 +21,7 @@ export default {
   output: {
     filename: '[name].[contenthash].js',
     path: path.resolve(__dirname, 'dist'),
-    publicPath: '/',
+    publicPath: './',
     clean: true,
     globalObject: 'this',
     devtoolModuleFilenameTemplate: 'webpack:///[namespace]/[resource-path]'

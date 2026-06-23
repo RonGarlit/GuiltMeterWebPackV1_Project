@@ -67,6 +67,29 @@ export function validateInput(input) {
 }
 
 /**
+ * Update the color fill of a range slider based on its current value.
+ * Sets the --value-percent CSS variable for the gradient track.
+ * Also updates the value badge if one exists.
+ * @param {HTMLInputElement} input
+ */
+export function updateSliderFill(input) {
+    if (!input || input.type !== 'range') return;
+
+    const min = parseFloat(input.min) || 0;
+    const max = parseFloat(input.max) || 100;
+    const value = parseFloat(input.value);
+    const percent = ((value - min) / (max - min)) * 100;
+
+    input.style.setProperty('--value-percent', `${percent}%`);
+
+    // Update value badge if one exists
+    const badge = document.getElementById(`${input.id}Value`);
+    if (badge) {
+        badge.textContent = `${value}/${max}`;
+    }
+}
+
+/**
  * Set contextual help text for a valid input.
  * @param {HTMLElement} helpText
  * @param {string} id
